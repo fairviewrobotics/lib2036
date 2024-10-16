@@ -8,13 +8,21 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+    id 'java'
     id 'edu.wpi.first.GradleRIO' version "2024.3.2"
 }
+
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    maven {
+        url 'https://frcmaven.wpi.edu/artifactory/release/'
+    }
 }
+
 
 dependencies {
     // Use JUnit Jupiter test framework.
@@ -23,8 +31,10 @@ dependencies {
 
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api libs.commons.math3
-    implementation wpi.java.deps.wpilib()
-    implementation wpi.java.vendor.java()
+    api wpi.java.vendor.java()
+    api wpi.java.deps.wpilib()
+    api 'org.slf4j:slf4j-api:2.0.16'
+    api 'org.slf4j:slf4j-log4j12:2.0.16'
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
