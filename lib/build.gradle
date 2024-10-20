@@ -10,10 +10,14 @@ plugins {
     id 'java-library'
     id 'java'
     id 'edu.wpi.first.GradleRIO' version "2024.3.2"
+    id 'maven-publish'
 }
 
 sourceCompatibility = JavaVersion.VERSION_21
 targetCompatibility = JavaVersion.VERSION_21
+
+group = 'org.blackknightsrobotics'
+version = '0.0.0-TEST'
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -27,6 +31,7 @@ repositories {
 dependencies {
     // Use JUnit Jupiter test framework.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testImplementation 'org.mockito:mockito-inline:5.0.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // This dependency is exported to consumers, that is to say found on their compile classpath.
@@ -44,9 +49,35 @@ test {
     useJUnitPlatform()
 }
 
+jar {
+    archiveBaseName.set(rootProject.name)
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes('Implementation-Title': rootProject.name,
+                'Implementation-Version': project.version)
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveBaseName.set(rootProject.name)
+    archiveClassifier.set("sources")
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveBaseName.set(rootProject.name)
+    archiveClassifier.set("javadoc")
+}
+
+
+
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
+

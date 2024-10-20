@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.blackknightsrobotics.utils.NetworkTableUtils;
+import org.checkerframework.checker.units.qual.N;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -123,11 +124,12 @@ public class ConfigManager {
         for (Object key : this.json.keySet()) {
             Object value = this.json.get(key);
             removeKey.addOption((String) key, value);
-            if (value.getClass().equals(Double.class)) { // TODO: Split ints and doubles
+
+            if (value instanceof Double) {
                 NTTune.setDouble((String) key, (Double) value);
-            } else if (value.getClass().equals(Boolean.class)) {
+            } else if (value instanceof Boolean) {
                 NTTune.setBoolean((String) key, (Boolean) value);
-            } else if (value.getClass().equals(String.class)) {
+            } else if (value instanceof String) {
                 NTTune.setString((String) key, (String) value);
             } else {
                 LOGGER.warn("Value is an unknown type ({})", value.getClass().getSimpleName());
@@ -167,6 +169,8 @@ public class ConfigManager {
             return (T) getString(key, (String) defaultValue);
         } else if (type.equals(Boolean.class)) {
             return (T) getBoolean(key, (boolean) defaultValue);
+        } else if (type.equals(Long.class)) {
+            return (T) getLong(key, (long) defaultValue);
         } else {
             LOGGER.warn("Could not get [{}] as a {}", key, type.getSimpleName());
         }
@@ -186,6 +190,23 @@ public class ConfigManager {
             res = (double) this.json.get(key);
         } catch (ClassCastException e) {
             LOGGER.warn("Failed to get [{}] as a double", key);
+        }
+
+        return res;
+    }
+
+    /**
+     * Get a long from the config
+     * @param key The key in the json
+     * @param defaultValue A default value
+     * @return A double (as an {@link Object})
+     */
+    private Object getLong(String key, long defaultValue) {
+        double res = defaultValue;
+        try {
+            res = (long) this.json.get(key);
+        } catch (ClassCastException e) {
+            LOGGER.warn("Failed to get [{}] as a long", key);
         }
 
         return res;

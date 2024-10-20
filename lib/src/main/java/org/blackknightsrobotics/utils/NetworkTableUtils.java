@@ -97,6 +97,16 @@ public class NetworkTableUtils {
     }
 
     /**
+     * This function sets a long in network tables
+     *
+     * @param key   The key in Network Tables for the value
+     * @param value What we are setting the entry to
+     */
+    public void setLong(String key, long value) {
+        this.table.getEntry(key).setInteger(value);
+    }
+
+    /**
      * This function sets a double in network tables
      *
      * @param key   The key in Network Tables for the value
